@@ -1,39 +1,38 @@
 name: Kernel Build for Realme C20A
 
 on:
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:  # Manual trigger for the build
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Using the latest Ubuntu VM from GitHub Actions
     
     steps:
     - name: Checkout Source
-      uses: actions/checkout@v3
-      
+      uses: actions/checkout@v3  # Checkout the kernel source repository
+
     - name: Install Dependencies
       run: |
         sudo apt update
         sudo apt install -y bc build-essential gcc-aarch64-linux-gnu \
         gcc-arm-linux-gnueabi libssl-dev ccache make flex bison \
-        libncurses-dev git wget curl lzop
-
+        libncurses-dev git wget curl lzop  # Install necessary build tools
+    
     - name: Set Up Environment
       run: |
-        export ARCH=arm64
-        export CROSS_COMPILE=aarch64-linux-gnu-
+        export ARCH=arm64  # Set the architecture to arm64 (Realme C20A is arm64)
+        export CROSS_COMPILE=aarch64-linux-gnu-  # Set the cross-compilation toolchain
         
     - name: Configure Kernel
       run: |
-        make O=out realme_defconfig
-    
+        make O=out ARCH=arm64 defconfig  # Use the default defconfig for Realme C20A
+
     - name: Compile Kernel
       run: |
-        make -j$(nproc) O=out
+        make -j$(nproc) O=out  # Compile the kernel using available CPU cores
     
     - name: Upload Kernel Image
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3  # Upload the compiled kernel image as an artifact
       with:
         name: Kernel-Image
-        path: out/arch/arm64/boot/Image
-        
+        path: out/arch/arm64/boot/Image  # Path to the kernel image after compilation
