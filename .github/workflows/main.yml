@@ -29,7 +29,7 @@ jobs:
 
     - name: Run oldconfig to handle prompts
       run: |
-        make O=out ARCH=arm64 oldconfig  # Auto-answer config prompts and update config
+        yes "" | make O=out ARCH=arm64 oldconfig  # Auto-answer config prompts to prevent interactive questions
 
     - name: Compile Kernel
       run: |
